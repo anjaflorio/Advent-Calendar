@@ -1,0 +1,100 @@
+{
+  "doors": [
+    {
+      "day": 1,
+      "opened": false
+    },
+    {
+      "day": 2,
+      "opened": false
+    },
+    {
+      "day": 3,
+      "opened": false
+    },
+    {
+      "day": 4,
+      "opened": false
+    },
+    {
+      "day": 5,
+      "opened": false
+    },
+    {
+      "day": 6,
+      "opened": false
+    },
+    {
+      "day": 7,
+      "opened": false
+    },
+    {
+      "day": 8,
+      "opened": false
+    },
+    {
+      "day": 9,
+      "opened": false
+    },
+    {
+      "day": 10,
+      "opened": false
+    },
+    {
+      "day": 11,
+      "opened": false
+    },
+    {
+      "day": 12,
+      "opened": false
+    },
+    {
+      "day": 13,
+      "opened": false
+    },
+    {
+      "day": 14,
+      "opened": false
+    },
+    {
+      "day": 15,
+      "opened": false
+    },
+    {
+      "day": 16,
+      "opened": false
+    },
+    {
+      "day": 17,
+      "opened": false
+    },
+    {
+      "day": 18,
+      "opened": false
+    },
+    {
+      "day": 19,
+      "opened": false
+    },
+    {
+      "day": 20,
+      "opened": false
+    },
+    {
+      "day": 21,
+      "opened": false
+    },
+    {
+      "day": 22,
+      "opened": false
+    },
+    {
+      "day": 23,
+      "opened": false
+    },
+    {
+      "day": 24,
+      "opened": false
+    }
+  ]
+}

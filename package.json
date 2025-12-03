@@ -1,0 +1,24 @@
+{
+  "name": "advent-calendar",
+  "version": "1.0.0",
+  "description": "An interactive advent calendar with translated songs, essays, poetry, and thoughts.",
+  "main": "src/index.html",
+  "scripts": {
+    "start": "live-server src",
+    "build": "echo 'Build step can be added here'"
+  },
+  "dependencies": {
+    "live-server": "^1.2.1"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "advent",
+    "calendar",
+    "interactive",
+    "poetry",
+    "songs",
+    "essays"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
