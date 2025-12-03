@@ -1,0 +1,12 @@
+[build]
+  publish = "src"
+  command = ""
+
+[dev]
+  command = ""
+
+# Pretty URLs + fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
