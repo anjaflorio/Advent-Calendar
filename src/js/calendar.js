@@ -74,61 +74,12 @@ function updateDoorState(day) {
   // captions (optional)
   const captions = Array.from({length: DAYS}, (_,i)=> `A note for day ${i+1}`);
 
-  // Initialize sound effect - Web Audio API bell sound
-  function playDoorSound() {
-    try {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const now = audioContext.currentTime;
-      
-      // Create a bell-like sound with multiple oscillators
-      const osc1 = audioContext.createOscillator();
-      const osc2 = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-      const gain1 = audioContext.createGain();
-      const gain2 = audioContext.createGain();
-      
-      osc1.frequency.value = 523.25; // C5
-      osc2.frequency.value = 783.99; // G5
-      
-      osc1.connect(gain1);
-      osc2.connect(gain2);
-      gain1.connect(gain);
-      gain2.connect(gain);
-      gain.connect(audioContext.destination);
-      
-      gain.gain.setValueAtTime(0.3, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
-      
-      osc1.start(now);
-      osc2.start(now);
-      osc1.stop(now + 0.6);
-      osc2.stop(now + 0.6);
-    } catch (e) {
-      console.log('Audio not available:', e);
-    }
-  }
-
-  // Initialize confetti effect
-  function triggerConfetti() {
-    try {
-      if (typeof ConfettiGenerator !== 'undefined') {
-        const canvas = document.getElementById('confetti-canvas');
-        if (canvas) {
-          const confetti = new ConfettiGenerator({
-            target: 'confetti-canvas',
-            max: 80,
-            size: 4,
-            animate: true,
-            props: ['circle', 'square'],
-            colors: [[201, 127, 127], [212, 175, 158], [232, 196, 192], [139, 59, 59]]
-          });
-          confetti.render();
-          setTimeout(() => confetti.clear(), 3000);
-        }
-      }
-    } catch (e) {
-      console.log('Confetti not available:', e);
-    }
+  // Door opening animation
+  function triggerDoorOpeningAnimation(doorElement) {
+    doorElement.classList.add('door-opening');
+    setTimeout(() => {
+      doorElement.classList.remove('door-opening');
+    }, 600);
   }
 
   // Update progress tracker
@@ -257,10 +208,9 @@ function updateDoorState(day) {
           opened.add(String(i));
           localStorage.setItem(storageKeyOpened, JSON.stringify(Array.from(opened)));
           
-          // Play sound and confetti only on first open
+          // Trigger animation and update progress only on first open
           if (isFirstOpen) {
-            playDoorSound();
-            triggerConfetti();
+            triggerDoorOpeningAnimation(a);
             updateProgressTracker();
           }
         });
@@ -288,9 +238,10 @@ function updateDoorState(day) {
         }
       }
       localStorage.setItem(storageKeyOpened, JSON.stringify(Array.from(opened)));
-      document.querySelectorAll('.door').forEach(b=> b.classList.add('opened'));
-      playDoorSound();
-      triggerConfetti();
+      document.querySelectorAll('.door').forEach(b=> {
+        b.classList.add('opened');
+        triggerDoorOpeningAnimation(b);
+      });
       updateProgressTracker();
     }
   });
