@@ -1,15 +1,15 @@
-const doors = document.querySelectorAll('.door');
-let contentContainer = document.getElementById('content-container');
+const doors = document.querySelectorAll('.door'); // NodeList of door elements
+let contentContainer = document.getElementById('content-container');  // Container for modal content
 const doorData = {}; // Object to hold door data
 
 // Fetch door data from JSON file
-fetch('./data/doors.json')
-    .then(response => response.json())
+fetch('./data/doors.json') 
+    .then(response => response.json()) // Parse JSON response
     .then(data => {
         Object.assign(doorData, data);
         initializeDoors();
     })
-    .catch(error => console.error('Error loading door data:', error));
+    .catch(error => console.error('Error loading door data:', error)); // Handle fetch errors
 
 // Initialize doors with event listeners
 function initializeDoors() {
@@ -21,7 +21,7 @@ function initializeDoors() {
     });
 }
 
-// Open the door and display content
+// open the door and display content
 function openDoor(day) {
   // guard if doorData for this day isn't loaded yet
   const entry = doorData[day] || {};
@@ -31,7 +31,7 @@ function openDoor(day) {
   loadContent(day);
 }
 
-// Load content for the specified day
+// load content for the specified day
 function loadContent(day) {
   const fileName = String(day).padStart(2, '0');
   fetch(`./content/days/${fileName}.md`)
@@ -41,15 +41,15 @@ function loadContent(day) {
       if(!contentContainer){
         const backdrop = document.createElement('div');
         backdrop.className = 'modal-backdrop';
-        backdrop.innerHTML = `<div class="modal" role="dialog" aria-modal="true">
+        backdrop.innerHTML = `<div class="modal" role="dialog" aria-modal="true"> 
           <div id="content-container" class="modal-content"></div>
           <button id="modal-close" class="close">Close</button>
         </div>`;
-        document.body.appendChild(backdrop);
-        contentContainer = backdrop.querySelector('#content-container');
-        const closeBtn = backdrop.querySelector('#modal-close');
-        closeBtn.addEventListener('click', ()=> backdrop.classList.remove('show'));
-        backdrop.addEventListener('click', (e)=> { if(e.target === backdrop) backdrop.classList.remove('show'); });
+        document.body.appendChild(backdrop); // append to body
+        contentContainer = backdrop.querySelector('#content-container'); // update reference
+        const closeBtn = backdrop.querySelector('#modal-close'); // close button
+        closeBtn.addEventListener('click', ()=> backdrop.classList.remove('show')); // close on button click
+        backdrop.addEventListener('click', (e)=> { if(e.target === backdrop) backdrop.classList.remove('show'); }); // close on backdrop click
       }
 
       contentContainer.innerHTML = (typeof marked === 'function') ? marked(content) : `<pre>${escapeHtml(content)}</pre>`;
@@ -59,22 +59,22 @@ function loadContent(day) {
 
       updateDoorState(day);
     })
-    .catch(error => console.error('Error loading content:', error));
+    .catch(error => console.error('Error loading content:', error)); // Handle fetch errors
 }
 
 // Update the door state in the JSON data
 function updateDoorState(day) {
-    // Here you can implement logic to save the updated state back to the JSON file if needed
+    //implement logic to save the updated state back to the JSON file if needed
 }
-(function(){
+(function(){ // IIFE to avoid polluting global scope
   const DAYS = 24;
   const container = document.getElementById('calendar');
   const header = document.querySelector('header');
 
-  // captions (optional)
+  //captions (optional)
   const captions = Array.from({length: DAYS}, (_,i)=> `A note for day ${i+1}`);
 
-  // Door opening animation
+  //door opening animation
   function triggerDoorOpeningAnimation(doorElement) {
     doorElement.classList.add('door-opening');
     setTimeout(() => {
@@ -82,7 +82,7 @@ function updateDoorState(day) {
     }, 600);
   }
 
-  // Update progress tracker
+  //update progress tracker
   function updateProgressTracker() {
     const doorsOpenedEl = document.getElementById('doors-opened');
     if (doorsOpenedEl) {
@@ -90,7 +90,7 @@ function updateDoorState(day) {
     }
   }
 
-  // Snowfall effect
+  //snowfall animation
   function initializeSnowfall() {
     const snowContainer = document.createElement('div');
     snowContainer.className = 'snow-container';
@@ -111,15 +111,15 @@ function updateDoorState(day) {
       setTimeout(() => snowflake.remove(), (duration + 2) * 1000);
     }
 
-    // Create snowflakes continuously
+    //create snowflakes continuously
     setInterval(createSnowflake, 200);
-    // Initial burst of snowflakes
+    //initial burst of snowflakes
     for (let i = 0; i < 30; i++) {
       setTimeout(createSnowflake, i * 80);
     }
   }
 
-  // Create sparkle effect on door hover
+  //create sparkle effect on door hover
   function createSparkle(event) {
     const door = event.currentTarget;
     if (!door.classList.contains('locked')) {
@@ -157,7 +157,7 @@ function updateDoorState(day) {
     }
   }
 
-  // Favorites system
+  //vavorites system, bookmark
   const storageKeyFavorites = 'advent_favorites';
   const favorites = new Set(JSON.parse(localStorage.getItem(storageKeyFavorites) || '[]'));
 
@@ -182,14 +182,14 @@ function updateDoorState(day) {
     });
   }
 
-  function getUnlockedCount(){
+  function getUnlockedCount(){ // determine how many doors are unlocked based on date
     const now = new Date();
     if(now.getMonth() === 11){ // December
       return Math.min(DAYS, now.getDate());
     }
     try{
-      const params = new URLSearchParams(location.search);
-      if(params.get('preview') === '1') return DAYS;
+      const params = new URLSearchParams(location.search); // dev preview mode
+      if(params.get('preview') === '1') return DAYS; // all unlocked
     }catch(e){}
     return 0;
   }
@@ -199,20 +199,21 @@ function updateDoorState(day) {
   const storageKeyOrder = 'advent_order_v1';
   const opened = new Set(JSON.parse(localStorage.getItem(storageKeyOpened) || '[]'));
 
-  // Fisher-Yates shuffle
+  //Fisher-Yates shuffle algorithm to shuffle array elements in place
   function shuffleArray(arr){
-    const a = arr.slice();
-    for(let i = a.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
+    const a = arr.slice(); // create a copy to avoid mutating original
+    for(let i = a.length - 1; i > 0; i--){ // iterate backwards
+      const j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
+      [a[i], a[j]] = [a[j], a[i]]; // swap elements
     }
     return a;
   }
 
-  function defaultOrder(){
-    return Array.from({length: DAYS}, (_,i)=> i+1);
+  function defaultOrder(){ // default sequential order
+    return Array.from({length: DAYS}, (_,i)=> i+1); // [1,2,...,DAYS]
   }
 
+  //load or initialize door order from localStorage
   function loadOrder(){
     try{
       const raw = localStorage.getItem(storageKeyOrder);
@@ -234,13 +235,13 @@ function updateDoorState(day) {
 
   let order = loadOrder();
 
+  //save updated order to localStorage
   function saveOrder(newOrder){
     order = newOrder.slice();
     localStorage.setItem(storageKeyOrder, JSON.stringify(order));
   }
 
-  // (reshuffle control removed) — no button appended to the header
-
+  //render the calendar doors
   function render(){
     container.innerHTML = '';
     for(const day of order){
@@ -289,7 +290,7 @@ function updateDoorState(day) {
       caption.className = 'caption';
       caption.textContent = captions[i-1];
 
-      // anchor behavior
+      // anchor behavior based on locked/unlocked state 
       if(!isUnlocked){
         a.href = '#';
         a.addEventListener('click', (e)=> e.preventDefault());
@@ -300,22 +301,22 @@ function updateDoorState(day) {
           opened.add(String(i));
           localStorage.setItem(storageKeyOpened, JSON.stringify(Array.from(opened)));
           
-          // Trigger animation and update progress only on first open
+          // trigger animation and update progress only on first open 
           if (isFirstOpen) {
             e.preventDefault();
             triggerDoorOpeningAnimation(a);
             updateProgressTracker();
-            // Navigate after animation completes
+            //navigate after animation completes
             setTimeout(() => {
               window.location.href = a.href;
             }, 650);
           }
         });
         
-        // Add hover sparkle effect
+        // add hover sparkle effect 
         a.addEventListener('mouseenter', createSparkle);
         
-        // Right-click to toggle favorite
+        // right-click to toggle favorite
         a.addEventListener('contextmenu', (e) => {
           e.preventDefault();
           toggleFavorite(i);
@@ -329,7 +330,7 @@ function updateDoorState(day) {
     }
   }
 
-  // initial render
+  // initial render 
   render();
   updateProgressTracker();
   updateFavoritesUI();
@@ -345,6 +346,7 @@ function updateDoorState(day) {
           arr.push(String(d));
         }
       }
+      // persist opened doors
       localStorage.setItem(storageKeyOpened, JSON.stringify(Array.from(opened)));
       document.querySelectorAll('.door').forEach(b=> {
         b.classList.add('opened');
