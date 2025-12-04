@@ -23,6 +23,38 @@
     <div id="day-content" class="content">Loading…</div>
   </main>
   <script>
+    // Initialize snowfall
+    function initializeSnowfall() {
+      const snowContainer = document.createElement('div');
+      snowContainer.className = 'snow-container';
+      document.body.appendChild(snowContainer);
+
+      function createSnowflake() {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        snowflake.style.left = Math.random() * window.innerWidth + 'px';
+        const size = 2 + Math.random() * 3;
+        snowflake.style.width = size + 'px';
+        snowflake.style.height = size + 'px';
+        const duration = 12 + Math.random() * 10;
+        snowflake.style.animationDuration = duration + 's';
+        snowflake.style.animationDelay = Math.random() * 2 + 's';
+        snowContainer.appendChild(snowflake);
+
+        setTimeout(() => snowflake.remove(), (duration + 2) * 1000);
+      }
+
+      // Create snowflakes continuously
+      setInterval(createSnowflake, 200);
+      // Initial burst of snowflakes
+      for (let i = 0; i < 30; i++) {
+        setTimeout(createSnowflake, i * 80);
+      }
+    }
+
+    // Start snowfall on page load
+    initializeSnowfall();
+
     // read `d` query param, default to 01
     function getParam(name){
       try{ return new URLSearchParams(location.search).get(name); }catch(e){return null}
