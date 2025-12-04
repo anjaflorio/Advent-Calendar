@@ -14,9 +14,27 @@
             Doors opened: <span id="doors-opened">0</span>/<span id="doors-total">24</span>
         </div>
     </header>
+    <audio id="background-audio" autoplay loop preload="auto" aria-hidden="true" tabindex="-1">
+        <source src="audio/Radiohead - All I Need.mp3" type="audio/mpeg">
+        Your browser does not support audio playback.
+    </audio>
     <main id="calendar">
         <!-- Doors will be dynamically generated here -->
     </main>
+    <script>
+        const backgroundAudio = document.getElementById('background-audio');
+        backgroundAudio.volume = 0.55;
+        const tryPlay = () => {
+            backgroundAudio.play().catch(() => {
+                const triggerPlay = () => {
+                    backgroundAudio.play().catch(() => {});
+                    window.removeEventListener('pointerdown', triggerPlay);
+                };
+                window.addEventListener('pointerdown', triggerPlay, { once: true });
+            });
+        };
+        tryPlay();
+    </script>
     <script src="js/app.js"></script>
     <script src="js/calendar.js"></script>
 </body>
