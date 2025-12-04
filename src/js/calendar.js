@@ -210,8 +210,13 @@ function updateDoorState(day) {
           
           // Trigger animation and update progress only on first open
           if (isFirstOpen) {
+            e.preventDefault();
             triggerDoorOpeningAnimation(a);
             updateProgressTracker();
+            // Navigate after animation completes
+            setTimeout(() => {
+              window.location.href = a.href;
+            }, 650);
           }
         });
       }
