@@ -100,19 +100,22 @@ function updateDoorState(day) {
       const snowflake = document.createElement('div');
       snowflake.className = 'snowflake';
       snowflake.style.left = Math.random() * window.innerWidth + 'px';
-      snowflake.style.width = (2 + Math.random() * 3) + 'px';
-      snowflake.style.height = snowflake.style.width;
-      snowflake.style.animationDuration = (10 + Math.random() * 10) + 's';
+      const size = 2 + Math.random() * 3;
+      snowflake.style.width = size + 'px';
+      snowflake.style.height = size + 'px';
+      const duration = 12 + Math.random() * 10;
+      snowflake.style.animationDuration = duration + 's';
       snowflake.style.animationDelay = Math.random() * 2 + 's';
       snowContainer.appendChild(snowflake);
 
-      setTimeout(() => snowflake.remove(), 20000);
+      setTimeout(() => snowflake.remove(), (duration + 2) * 1000);
     }
 
     // Create snowflakes continuously
-    setInterval(createSnowflake, 300);
-    for (let i = 0; i < 20; i++) {
-      setTimeout(createSnowflake, i * 100);
+    setInterval(createSnowflake, 200);
+    // Initial burst of snowflakes
+    for (let i = 0; i < 30; i++) {
+      setTimeout(createSnowflake, i * 80);
     }
   }
 

@@ -311,14 +311,15 @@ header p{ margin:0; color:rgba(107,40,40,.75); text-shadow: 0 1px 2px rgba(255,2
 /* snowfall animation */
 @keyframes snowfall {
   0% {
-    transform: translateY(-10vh) translateX(0);
+    transform: translateY(-10vh) translateX(0) rotate(0deg);
     opacity: 1;
   }
-  90% {
-    opacity: 1;
+  50% {
+    transform: translateY(50vh) translateX(50px) rotate(180deg);
+    opacity: 0.8;
   }
   100% {
-    transform: translateY(100vh) translateX(100px);
+    transform: translateY(110vh) translateX(100px) rotate(360deg);
     opacity: 0;
   }
 }
@@ -344,6 +345,7 @@ header p{ margin:0; color:rgba(107,40,40,.75); text-shadow: 0 1px 2px rgba(255,2
   border-radius: 50%;
   animation: snowfall linear forwards;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.4));
 }
 
 /* opened style */
