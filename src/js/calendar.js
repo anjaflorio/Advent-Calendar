@@ -90,6 +90,95 @@ function updateDoorState(day) {
     }
   }
 
+  // Snowfall effect
+  function initializeSnowfall() {
+    const snowContainer = document.createElement('div');
+    snowContainer.className = 'snow-container';
+    document.body.appendChild(snowContainer);
+
+    function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.className = 'snowflake';
+      snowflake.style.left = Math.random() * window.innerWidth + 'px';
+      snowflake.style.width = (2 + Math.random() * 3) + 'px';
+      snowflake.style.height = snowflake.style.width;
+      snowflake.style.animationDuration = (10 + Math.random() * 10) + 's';
+      snowflake.style.animationDelay = Math.random() * 2 + 's';
+      snowContainer.appendChild(snowflake);
+
+      setTimeout(() => snowflake.remove(), 20000);
+    }
+
+    // Create snowflakes continuously
+    setInterval(createSnowflake, 300);
+    for (let i = 0; i < 20; i++) {
+      setTimeout(createSnowflake, i * 100);
+    }
+  }
+
+  // Create sparkle effect on door hover
+  function createSparkle(event) {
+    const door = event.currentTarget;
+    if (!door.classList.contains('locked')) {
+      for (let i = 0; i < 3; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.style.position = 'fixed';
+        sparkle.style.pointerEvents = 'none';
+        sparkle.style.width = '4px';
+        sparkle.style.height = '4px';
+        sparkle.style.background = 'radial-gradient(circle, var(--gold), transparent)';
+        sparkle.style.borderRadius = '50%';
+        sparkle.style.boxShadow = '0 0 8px var(--gold)';
+
+        const rect = door.getBoundingClientRect();
+        sparkle.style.left = (rect.left + Math.random() * rect.width) + 'px';
+        sparkle.style.top = (rect.top + Math.random() * rect.height) + 'px';
+
+        document.body.appendChild(sparkle);
+
+        const angle = (Math.PI * 2 * i) / 3;
+        const distance = 50 + Math.random() * 30;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance - 20;
+
+        sparkle.animate([
+          { opacity: 1, transform: 'translate(0, 0) scale(1)' },
+          { opacity: 0, transform: `translate(${tx}px, ${ty}px) scale(0)` }
+        ], {
+          duration: 600,
+          easing: 'ease-out'
+        });
+
+        setTimeout(() => sparkle.remove(), 600);
+      }
+    }
+  }
+
+  // Favorites system
+  const storageKeyFavorites = 'advent_favorites';
+  const favorites = new Set(JSON.parse(localStorage.getItem(storageKeyFavorites) || '[]'));
+
+  function toggleFavorite(dayNumber) {
+    if (favorites.has(String(dayNumber))) {
+      favorites.delete(String(dayNumber));
+    } else {
+      favorites.add(String(dayNumber));
+    }
+    localStorage.setItem(storageKeyFavorites, JSON.stringify(Array.from(favorites)));
+    updateFavoritesUI();
+  }
+
+  function updateFavoritesUI() {
+    document.querySelectorAll('.door').forEach(door => {
+      const day = door.dataset.day;
+      if (favorites.has(String(day))) {
+        door.classList.add('favorite');
+      } else {
+        door.classList.remove('favorite');
+      }
+    });
+  }
+
   function getUnlockedCount(){
     const now = new Date();
     if(now.getMonth() === 11){ // December
@@ -219,6 +308,15 @@ function updateDoorState(day) {
             }, 650);
           }
         });
+        
+        // Add hover sparkle effect
+        a.addEventListener('mouseenter', createSparkle);
+        
+        // Right-click to toggle favorite
+        a.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          toggleFavorite(i);
+        });
       }
 
       a.appendChild(img);
@@ -231,6 +329,8 @@ function updateDoorState(day) {
   // initial render
   render();
   updateProgressTracker();
+  updateFavoritesUI();
+  initializeSnowfall();
 
   // small dev shortcut: press O to open all unlocked
   window.addEventListener('keydown', (e)=>{
