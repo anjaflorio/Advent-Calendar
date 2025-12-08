@@ -10,6 +10,8 @@
     .back{ display:inline-block; margin-bottom:12px; text-decoration:none; color:var(--ink); font-weight:700; }
     h2{ margin-top:0; color:var(--lesbian-5); }
     .content{ white-space:pre-wrap; line-height:1.6; color:var(--ink); }
+    .door-music{ margin-top:24px; display:flex; flex-direction:column; align-items:center; }
+    .door-music audio{ width:100%; max-width:340px; border:none; border-radius:999px; background: rgba(255,255,255,0.9); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
   </style>
 </head>
 <body>
@@ -21,6 +23,7 @@
     <a class="back" href="../index.html">&larr; Back to calendar</a>
     <h2 id="day-title">Day</h2>
     <div id="day-content" class="content">Loading…</div>
+    <div id="door-audio" class="door-music" role="presentation"></div>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" integrity="sha256-RZc2yGuxhLRVb18Nuziue4ZKtpybxFbH+5Dn5xK6LyY=" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
@@ -63,6 +66,42 @@
     const d = getParam('d') || '01';
     const titleEl = document.getElementById('day-title');
     const contentEl = document.getElementById('day-content');
+    const panelAudio = document.getElementById('door-audio');
+
+    const doorMusicMap = {
+      '09': {
+        src: '../audio/Mitski - Im Your Man (Official Lyric Video).mp3',
+        name: 'Mitski — I’m Your Man (Official Lyric Video)'
+      }
+    };
+
+    function renderDoorAudio(day) {
+      if(!panelAudio) return;
+      panelAudio.innerHTML = '';
+      const info = doorMusicMap[day];
+      if(!info) return;
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      audio.autoplay = true;
+      audio.loop = true;
+      audio.preload = 'auto';
+      audio.volume = 0.5;
+      audio.setAttribute('aria-label', `${info.name} background music`);
+      const source = document.createElement('source');
+      source.src = info.src;
+      source.type = 'audio/mpeg';
+      audio.appendChild(source);
+      panelAudio.appendChild(audio);
+
+      const tryPlay = () => audio.play().catch(() => {
+        const resume = () => {
+          audio.play().catch(() => {});
+          window.removeEventListener('pointerdown', resume);
+        };
+        window.addEventListener('pointerdown', resume, { once: true });
+      });
+      tryPlay();
+    }
 
     titleEl.textContent = `Day ${Number(d)}`;
 
@@ -82,6 +121,7 @@
                        .replace(/\n/g, '<br>');
         contentEl.innerHTML = '<p>' + html + '</p>';
       }
+      renderDoorAudio(d);
     }).catch(err=>{
       contentEl.textContent = 'Unable to load content for this day.';
       console.error(err);
