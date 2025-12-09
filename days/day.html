@@ -63,7 +63,15 @@
     function getParam(name){
       try{ return new URLSearchParams(location.search).get(name); }catch(e){return null}
     }
-    const d = getParam('d') || '01';
+    const rawDay = getParam('d');
+    const sanitizedDay = (() => {
+      const candidate = (rawDay || '').trim();
+      if(/^[0-9]{1,2}$/.test(candidate)){
+        return candidate.padStart(2,'0');
+      }
+      return '01';
+    })();
+    const dayNumber = Number(sanitizedDay);
     const titleEl = document.getElementById('day-title');
     const contentEl = document.getElementById('day-content');
     const panelAudio = document.getElementById('door-audio');
@@ -103,9 +111,9 @@
       tryPlay();
     }
 
-    titleEl.textContent = `Day ${Number(d)}`;
+    titleEl.textContent = Number.isFinite(dayNumber) ? `Day ${dayNumber}` : 'Day';
 
-    fetch(`../content/days/${d}.md`).then(r=>{
+    fetch(`../content/days/${sanitizedDay}.md`).then(r=>{
       if(!r.ok) throw new Error('Not found');
       return r.text();
     }).then(md=>{
@@ -121,7 +129,7 @@
                        .replace(/\n/g, '<br>');
         contentEl.innerHTML = '<p>' + html + '</p>';
       }
-      renderDoorAudio(d);
+      renderDoorAudio(sanitizedDay);
     }).catch(err=>{
       contentEl.textContent = 'Unable to load content for this day.';
       console.error(err);
